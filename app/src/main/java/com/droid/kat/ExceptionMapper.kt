@@ -19,7 +19,7 @@ class ExceptionMapper @Inject constructor() {
                 "Please check your network connection"
             }
             else -> {
-                throwable.message.toString()
+                "Could not reach our servers, try again!"
             }
         }
 

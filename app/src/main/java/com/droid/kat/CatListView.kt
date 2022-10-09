@@ -1,6 +1,5 @@
 package com.droid.kat
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,20 +23,33 @@ class CatListView @Inject constructor() {
         fun loadNextPage()
     }
 
-    fun init(recyclerView: RecyclerView, callbacks: Callbacks) {
-        catAdapter = CatAdapter(callbacks)
-        recyclerView.apply {
-            layoutManager = LinearLayoutManager(recyclerView.context)
+    data class CatViewConfig(
+        val recyclerView: RecyclerView,
+        val callbacks: Callbacks,
+        val paginationOffset: Int = 5
+    )
+
+    fun init(catViewConfig: CatViewConfig) {
+        catAdapter = CatAdapter(catViewConfig.callbacks, catViewConfig.paginationOffset)
+
+        catViewConfig.recyclerView.apply {
+            layoutManager = LinearLayoutManager(context)
             adapter = catAdapter
         }
     }
 
     fun loadData(catList: List<CatData>) {
-        catAdapter.submitList(catList.toMutableList())
+        val finalList = catAdapter.currentList.toMutableList()
+        finalList.addAll(catList)
+
+        catAdapter.submitList(finalList)
+
+        info { "total items: ${finalList.size}" }
     }
 
-    class CatAdapter(val callbacks: Callbacks): ListAdapter<CatData, CatAdapter.ViewHolder>(CatResponseDiff()) {
-        inner class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    class CatAdapter(val callbacks: Callbacks, val paginationOffset: Int) :
+        ListAdapter<CatData, CatAdapter.ViewHolder>(CatResponseDiff()) {
+        inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             var tvBreedName: TextView
             var ivCatImage: ImageView
             var rootView: CardView
@@ -69,11 +81,15 @@ class CatListView @Inject constructor() {
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            if (position == (itemCount - paginationOffset)) {
+                callbacks.loadNextPage()
+            }
+
             holder.bindItem(getItem(position))
         }
     }
 
-    class CatResponseDiff: DiffUtil.ItemCallback<CatData>() {
+    class CatResponseDiff : DiffUtil.ItemCallback<CatData>() {
         override fun areItemsTheSame(oldItem: CatData, newItem: CatData): Boolean {
             return oldItem.id == newItem.id
         }

@@ -1,8 +1,9 @@
 package com.droid.kat
 
 import android.os.Bundle
-import android.os.Message
+import android.widget.Button
 import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -22,6 +23,8 @@ class MainActivity : AppCompatActivity(), CatListView.Callbacks {
     lateinit var recyclerView: RecyclerView
     lateinit var errorLayout: ConstraintLayout
     lateinit var progressBar: ProgressBar
+    lateinit var btnRetry: Button
+    lateinit var tvErrorMessage: TextView
 
     @Inject
     lateinit var catListView: CatListView
@@ -34,12 +37,36 @@ class MainActivity : AppCompatActivity(), CatListView.Callbacks {
         observeData()
     }
 
+    override fun onItemClick(catData: CatData) {
+        info { "clicked: $catData" }
+    }
+
+    override fun loadNextPage() {
+        fetchData()
+    }
+
+    override fun loadData(catList: List<CatData>) {
+        catListView.loadData(catList)
+    }
+
     private fun initUI() {
         recyclerView = findViewById(R.id.rvCats)
         progressBar = findViewById(R.id.progressBar)
         errorLayout = findViewById(R.id.errorLayout)
+        btnRetry = findViewById(R.id.btnRetry)
+        tvErrorMessage = findViewById(R.id.tvErrorMessage)
 
-        catListView.init(recyclerView, this)
+        val catViewConfig = CatListView.CatViewConfig(
+            recyclerView = recyclerView,
+            callbacks = this,
+            paginationOffset = 10
+        )
+
+        catListView.init(catViewConfig)
+
+        btnRetry.setOnClickListener {
+            fetchData()
+        }
     }
 
     private fun fetchData() {
@@ -54,12 +81,12 @@ class MainActivity : AppCompatActivity(), CatListView.Callbacks {
                         when {
                             it.loading -> {
                                 info("Activity UI State") { "loading" }
-                                showProgressBar(true)
+                                showProgressBar()
                                 clearLoadingState()
                             }
                             it.error != null -> {
                                 error("Activity UI State") { it.error }
-                                showErrorLayout(it.error, true)
+                                showErrorLayout(it.error)
                                 clearErrorState()
                             }
                             it.catList?.isNotEmpty() == true -> {
@@ -75,35 +102,23 @@ class MainActivity : AppCompatActivity(), CatListView.Callbacks {
 
     private fun showCatListView(catList: List<CatData>) {
         progressBar.gone()
+        errorLayout.gone()
         recyclerView.visible()
+
         loadData(catList)
     }
 
-    fun showProgressBar(show: Boolean) {
-        if (show) {
-            progressBar.visible()
+    private fun showProgressBar() {
+        progressBar.visible()
+    }
+
+    private fun showErrorLayout(message: String) {
+        if (recyclerView.isVisible()) {
+            toast(message)
         } else {
             progressBar.gone()
-        }
-    }
-
-    fun showErrorLayout(message: String, show: Boolean) {
-        if (show) {
             errorLayout.visible()
-        } else {
-            errorLayout.gone()
+            tvErrorMessage.text = message
         }
-    }
-
-    override fun onItemClick(catData: CatData) {
-
-    }
-
-    override fun loadNextPage() {
-
-    }
-
-    override fun loadData(catList: List<CatData>) {
-        catListView.loadData(catList)
     }
 }
