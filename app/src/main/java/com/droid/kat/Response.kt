@@ -7,9 +7,10 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @Parcelize
-data class CatSearchResponse(
+data class CatData(
     val id: String,
     val url: String? = null,
+    val breeds: List<BreedData>? = null,
 ): Parcelable {
     @Serializable
     @Parcelize

@@ -71,6 +71,7 @@ object NetworkModule {
     }
 
     @Singleton
+    @Provides
     fun providesRetrofit(okHttpClient: OkHttpClient, json: Json, contentType: MediaType): Retrofit {
         return Retrofit.Builder()
             .client(okHttpClient)
