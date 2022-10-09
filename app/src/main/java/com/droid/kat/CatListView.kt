@@ -47,12 +47,12 @@ class CatListView @Inject constructor() {
         info { "total items: ${finalList.size}" }
     }
 
-    class CatAdapter(val callbacks: Callbacks, val paginationOffset: Int) :
+    class CatAdapter(private val callbacks: Callbacks, private val paginationOffset: Int) :
         ListAdapter<CatData, CatAdapter.ViewHolder>(CatResponseDiff()) {
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            var tvBreedName: TextView
-            var ivCatImage: ImageView
-            var rootView: CardView
+            private var tvBreedName: TextView
+            private var ivCatImage: ImageView
+            private var rootView: CardView
 
             init {
                 tvBreedName = view.findViewById(R.id.tvBreedName)

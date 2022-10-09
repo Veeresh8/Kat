@@ -20,11 +20,11 @@ class MainActivity : AppCompatActivity(), CatListView.Callbacks {
 
     private val katViewModel: KatViewModel by viewModels()
 
-    lateinit var recyclerView: RecyclerView
-    lateinit var errorLayout: ConstraintLayout
-    lateinit var progressBar: ProgressBar
-    lateinit var btnRetry: Button
-    lateinit var tvErrorMessage: TextView
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var errorLayout: ConstraintLayout
+    private lateinit var progressBar: ProgressBar
+    private lateinit var btnRetry: Button
+    private lateinit var tvErrorMessage: TextView
 
     @Inject
     lateinit var catListView: CatListView
@@ -33,7 +33,10 @@ class MainActivity : AppCompatActivity(), CatListView.Callbacks {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initUI()
-        fetchData()
+
+        if (savedInstanceState == null)
+            fetchData()
+
         observeData()
     }
 
@@ -59,7 +62,7 @@ class MainActivity : AppCompatActivity(), CatListView.Callbacks {
         val catViewConfig = CatListView.CatViewConfig(
             recyclerView = recyclerView,
             callbacks = this,
-            paginationOffset = 10
+            paginationOffset = 2
         )
 
         catListView.init(catViewConfig)
