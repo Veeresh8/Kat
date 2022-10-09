@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity(), CatListView.Callbacks {
 
     override fun onItemClick(catData: CatData) {
         info { "clicked: $catData" }
+        CatDetailsActivity.launch(this, catData)
     }
 
     override fun loadNextPage() {

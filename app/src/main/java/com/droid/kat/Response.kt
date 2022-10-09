@@ -24,4 +24,8 @@ data class CatData(
         @SerialName("child_friendly")
         val childFriendlyRating: Int? = null,
     ): Parcelable
+
+    fun getBreedName(): String {
+        return breeds?.firstOrNull()?.name ?: "Unknown breed"
+    }
 }

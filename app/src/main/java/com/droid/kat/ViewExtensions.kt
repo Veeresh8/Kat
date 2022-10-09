@@ -21,6 +21,16 @@ fun View.invisible() {
     visibility = View.INVISIBLE
 }
 
+fun View.disable() {
+    alpha = 0.5F
+    isEnabled = false
+}
+
+fun View.enable() {
+    alpha = 1F
+    isEnabled = true
+}
+
 fun Any.toast(message: String?) {
     Handler(Looper.getMainLooper()).post {
         Toast.makeText(App.instance, message, Toast.LENGTH_SHORT).show()
