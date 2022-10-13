@@ -21,10 +21,8 @@ class ImageSaver @Inject constructor(
         withContext(ioDispatcher) {
             val bitmap = BitmapFactory.decodeFile(file.path)
             MediaStore.Images.Media.insertImage(appContext.contentResolver, bitmap, name, "")
-            info { "Saved image successfully!: ${Thread.currentThread()}" }
 
             withContext(mainDispatcher) {
-                info { "Saved image successfully callback!: ${Thread.currentThread()}" }
                 callback.invoke()
             }
         }

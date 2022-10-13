@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity(), CatListView.Callbacks {
         val catViewConfig = CatListView.CatViewConfig(
             recyclerView = recyclerView,
             callbacks = this,
-            paginationOffset = 2
+            paginationOffset = 5
         )
 
         catListView.init(catViewConfig)

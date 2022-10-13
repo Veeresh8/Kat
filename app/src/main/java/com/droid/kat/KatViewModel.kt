@@ -26,16 +26,13 @@ class KatViewModel @Inject constructor(
             when (val result = catDataUseCase.fetchCatData(totalItems = katConfig.pageLimit, pageNumber = katConfig.currentPage)) {
                 is Result.Success -> {
                     homeUiState.update { currentState ->
-                        info("UI State") { "got results" }
-
                         katConfig.currentPage += 1
                         currentState.copy(catList = result.data)
                     }
                 }
                 is Result.Error -> {
                     homeUiState.update { currentState ->
-                        info("UI State") { "sending error state" }
-                        currentState.copy(catList = null, error = exceptionMapper.getExceptionMessage(result.exception))
+                        currentState.copy(error = exceptionMapper.getExceptionMessage(result.exception))
                     }
                 }
             }
@@ -44,21 +41,18 @@ class KatViewModel @Inject constructor(
 
     fun showLoadingState() {
         homeUiState.update { currentState ->
-            info("UI State") { "show loading state" }
             currentState.copy(loading = true)
         }
     }
 
     fun clearLoadingState() {
         homeUiState.update { currentState ->
-            info("UI State") { "clear loading state" }
             currentState.copy(loading = false)
         }
     }
 
     fun clearErrorState() {
         homeUiState.update { currentState ->
-            info("UI State") { "clear error state" }
             currentState.copy(error = null)
         }
     }

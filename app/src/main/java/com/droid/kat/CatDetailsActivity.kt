@@ -84,7 +84,6 @@ class CatDetailsActivity : AppCompatActivity() {
                 startActivity(galleryIntent)
             }
 
-
         snackBar.setActionTextColor(Color.YELLOW)
         snackBar.show()
     }

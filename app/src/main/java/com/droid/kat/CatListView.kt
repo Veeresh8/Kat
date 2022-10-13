@@ -39,6 +39,11 @@ class CatListView @Inject constructor() {
     }
 
     fun loadData(catList: List<CatData>) {
+        if (catAdapter.currentList.takeLast(catList.size) == catList) {
+            info { "ignoring same list" }
+            return
+        }
+
         val finalList = catAdapter.currentList.toMutableList()
         finalList.addAll(catList)
 
