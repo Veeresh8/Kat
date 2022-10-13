@@ -70,7 +70,7 @@ class CatListView @Inject constructor() {
             }
 
             fun bindItem(catData: CatData) {
-                tvBreedName.text = catData.getBreedName()
+                tvBreedName.text = catData.breeds?.firstOrNull()?.name
 
                 catData.url?.let { url ->
                     ivCatImage.load(url) {
